@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REACT_TODO_API", "REACT_TODO_API\REACT_TODO_API.csproj", "{59AF4B41-F60A-48AA-90C7-6AD7AE59A968}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo_Data", "ToDo_Data\ToDo_Data.csproj", "{3FF6D9F2-09C5-4C72-9A77-28F09DC41726}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{59AF4B41-F60A-48AA-90C7-6AD7AE59A968}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59AF4B41-F60A-48AA-90C7-6AD7AE59A968}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59AF4B41-F60A-48AA-90C7-6AD7AE59A968}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FF6D9F2-09C5-4C72-9A77-28F09DC41726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FF6D9F2-09C5-4C72-9A77-28F09DC41726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FF6D9F2-09C5-4C72-9A77-28F09DC41726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FF6D9F2-09C5-4C72-9A77-28F09DC41726}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
