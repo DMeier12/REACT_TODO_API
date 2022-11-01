@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="NewFolder\" />
+    <ProjectReference Include="..\ToDo_Data\ToDo_Data.csproj" />
   </ItemGroup>
 
 </Project>

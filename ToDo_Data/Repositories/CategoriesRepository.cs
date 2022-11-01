@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToDo_Data.Interfaces;
 
 namespace ToDo_Data.Repositories
 {
-    internal class CategoriesRepository
+    public class CategoriesRepository : ICategoriesRepository
     {
         private readonly ReactAPIContext _reactAPIContext;
         public CategoriesRepository(ReactAPIContext reactAPIContext)
@@ -50,7 +51,7 @@ namespace ToDo_Data.Repositories
             {
                 var categoryid = _reactAPIContext.CategoryIds.Remove(categoryId).Entity;
                 return true;
-            } as
+            } 
             catch (Exception)
             {
                 return false;

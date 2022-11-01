@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToDo_Data.Interfaces;
 
 namespace ToDo_Data.Repositories
 {
-    internal class ToDoRepository
+    internal class ToDoRepository : IToDoRepository
     {
         private readonly ReactAPIContext _reactAPIContext;
         public ToDoRepository(ReactAPIContext reactAPIContext)
@@ -18,11 +19,12 @@ namespace ToDo_Data.Repositories
         /// Returns a collection of todo items that are not completed
         /// </summary>
         /// <returns> list<ToDoItem></ToDoItem></returns>
-        public async Task<List<ToDoItem>> getToDoItems(bool iscompleted = false) {
+        public async Task<List<ToDoItem>> getToDoItems(int userid,bool iscompleted = false) {
             try
             {
                 var todoitems = (from item in _reactAPIContext.ToDoItems
                                  where item.DateCompleted.HasValue == iscompleted
+                                 where item.UserId == userid
                                  select item).ToList();
                 if (!todoitems.Any()) { return new List<ToDoItem>(); }
                 return todoitems;

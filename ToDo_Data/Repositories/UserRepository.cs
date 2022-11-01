@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToDo_Data.Interfaces;
 
 namespace ToDo_Data.Repositories
 {
-    internal class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly ReactAPIContext _reactAPIContext;
         public UserRepository(ReactAPIContext reactAPIContext)
@@ -43,6 +44,13 @@ namespace ToDo_Data.Repositories
                 return null;
                 throw;
             }
+        }
+
+        public async Task<UserId> login(string username, string password)
+        {
+            var user = await getUser(username);
+            if (user == null) return null;
+            return user.Password == password ? user : null;
         }
 
         public async Task<UserId> createUser(string username, string password)
@@ -83,6 +91,8 @@ namespace ToDo_Data.Repositories
                 throw;
             }
         }
+
+        
 
         private bool validatepassword(string password)
         {
