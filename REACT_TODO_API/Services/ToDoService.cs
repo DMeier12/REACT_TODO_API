@@ -4,7 +4,7 @@ using ToDo_Data.Interfaces;
 
 namespace REACT_TODO_API.Services
 {
-    public class ToDoService
+    public class ToDoService : IToDoService
     {
         private readonly IToDoRepository _toDoRepository;
 

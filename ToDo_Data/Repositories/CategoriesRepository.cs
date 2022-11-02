@@ -10,9 +10,9 @@ namespace ToDo_Data.Repositories
     public class CategoriesRepository : ICategoriesRepository
     {
         private readonly ReactAPIContext _reactAPIContext;
-        public CategoriesRepository(ReactAPIContext reactAPIContext)
+        public CategoriesRepository()
         {
-            _reactAPIContext = reactAPIContext;
+            _reactAPIContext = new ReactAPIContext();
         }
 
 

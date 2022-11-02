@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using ToDo_Data.Interfaces;
 
 namespace ToDo_Data.Repositories
 {
-    internal class ToDoRepository : IToDoRepository
+    public class ToDoRepository : IToDoRepository
     {
         private readonly ReactAPIContext _reactAPIContext;
-        public ToDoRepository(ReactAPIContext reactAPIContext)
+        public ToDoRepository()
         {
-            _reactAPIContext = reactAPIContext; 
+            _reactAPIContext = new ReactAPIContext(); 
         }
         
         /// <summary>
