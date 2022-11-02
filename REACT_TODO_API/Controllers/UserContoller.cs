@@ -15,7 +15,7 @@ namespace REACT_TODO_API.Controllers
             _userService = userService;
         }
 
-        [HttpGet(Name = "GetUsers")]
+        [HttpGet("GetUsers")]
         public async Task<List<UserId>> GetUsersAsync()
         {
             try
@@ -30,7 +30,7 @@ namespace REACT_TODO_API.Controllers
             }
         }
 
-        [HttpPut(Name = "CreateUser")]
+        [HttpPut("CreateUser")]
         public async Task<UserId> CreateUserAsync(string username, string password)
         {
             try
@@ -44,6 +44,52 @@ namespace REACT_TODO_API.Controllers
                 throw;
             }
         }
+
+        [HttpPost("UpdateUser")]
+        public async Task<bool> UpdateUserAsync(int userid, string username, string password)
+        {
+            try
+            {
+                var returnvalue = await _userService.updateUser(userid, username, password);
+                return returnvalue;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        [HttpDelete("DeleteUser")]
+        public async Task<bool> DeleteUserAsync(int userid)
+        {
+            try
+            {
+                var returnvalue = await _userService.deleteUser(userid);
+                return returnvalue;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        
+        [HttpGet("Login")]
+        public async Task<UserId> LoginAsync(string username, string password)
+        {
+            try
+            {
+                var returnvalue = await _userService.login(username, password);
+                return returnvalue;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
     }
 
     

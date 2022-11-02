@@ -1,32 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Core.EntityClient;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using ToDo_Data.Interfaces;
+﻿using ToDo_Data.Interfaces;
 
 namespace ToDo_Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly ReactAPIContext _reactAPIContext;
-        public UserRepository()//ReactAPIContext reactAPIContext)
+        private readonly ReactAPIContext _reactApiContext;
+        public UserRepository(ReactAPIContext reactApiContext)
         {
-            string connDev = @"metadata=res://*/MyModel.csdl|res://*/MyModel.ssdl|res://*/MyModel.msl;provider=System.Data.SqlClient;provider connection string=""Server=.\sqlexpress;Database=ReactAPI;Integrated Security=True""";
-            EntityConnection ec = new EntityConnection(connDev);
-
-            _reactAPIContext = new ReactAPIContext(ec);
+            _reactApiContext = reactApiContext;
         }
 
-        
-
-            public async Task<List<UserId>> getUserIds()
+        public async Task<List<UserId>> getUserIds()
         {
             try
             {
-                var userids = (from item in _reactAPIContext.UserIds
+                var userids = (from item in _reactApiContext.UserIds
                                select item).ToList();
                 return userids;
             }
@@ -37,26 +25,34 @@ namespace ToDo_Data.Repositories
             }
         }
 
-        public async Task<UserId> getUser(string username)
+        public Task<UserId?> getUser(string username)
         {
             try
             {
-                var userids = (from item in _reactAPIContext.UserIds
+                var userids = (from item in _reactApiContext.UserIds
                                where item.Username == username
                                select item).FirstOrDefault();
-                return userids;
+                return Task.FromResult(userids);
             }
             catch (Exception)
             {
-                return null;
+                return Task.FromResult<UserId>(null);
                 throw;
             }
+        }
+
+        public Task<UserId> getUserByID(int UserId)
+        {
+            var user = (from item in _reactApiContext.UserIds
+                where item.UserId1 == UserId
+                select item).Single();
+
+            return Task.FromResult(user);
         }
 
         public async Task<UserId> login(string username, string password)
         {
             var user = await getUser(username);
-            if (user == null) return null;
             return user.Password == password ? user : null;
         }
 
@@ -64,42 +60,47 @@ namespace ToDo_Data.Repositories
         {
             try
             {
-                 if (!validatepassword(password)) new Exception("Password is not complex enough.");
+
+                if (!validatepassword(password)) throw new Exception("Password is not complex enough.");
                 var newuser = new UserId { Password = password, 
                 Username = username};
-                var userids = _reactAPIContext.UserIds.AddAsync(newuser).Result.Entity;
+                var userids = _reactApiContext.UserIds.Add(newuser).Entity;
+                _reactApiContext.SaveChanges();
                 return userids;
+
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                Console.WriteLine(e);
                 throw;
             }
         }
 
         public async Task<bool> updateUser(UserId userId, string username, string password)
         {
-            try
-            {
-                if (validatepassword(password) || password == null)
+            if (!validatepassword(password))
                     throw new Exception("Your password isn't complex enough.");
 
+            if (username == null)
+                throw new Exception("Invalid Username");
 
-                if (username == null)
-                    throw new Exception("Invalid Username");
-                userId.Password = password;
-                userId.Username = username;
-                var _userId = _reactAPIContext.UserIds.Update(userId).Entity;
-                return true;
+            userId.Password = password;
+            userId.Username = username;
+
+            var _userId = _reactApiContext.UserIds.Update(userId).Entity;
+            _reactApiContext.SaveChanges();
+
+            return true;
             }
-            catch (Exception)
-            {
-                return false;
-                throw;
-            }
+
+        public async Task<bool> deleteUser(UserId userId)
+        {
+
+            var diduserdelete = _reactApiContext.UserIds.Remove(userId).Entity;
+           _reactApiContext.SaveChanges();
+            return diduserdelete != null;
         }
 
-        
 
         private bool validatepassword(string password)
         {

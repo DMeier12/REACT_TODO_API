@@ -37,10 +37,19 @@ namespace REACT_TODO_API.Services
             return createUserResult;
         }
 
-        public Task<bool> updateUser(UserId userId, string username, string password)
+        public Task<bool> updateUser(int userId, string username, string password)
         {
-            var updateUserResult = Task.FromResult(_userRepository.updateUser(userId, username, password).Result);
+            var currentuser = Task.FromResult(_userRepository.getUserByID(userId).Result);
+            if (currentuser == null) throw new Exception("User Not Found");
+            var updateUserResult = Task.FromResult(_userRepository.updateUser(currentuser.Result, username, password).Result);
             return updateUserResult;
+        }
+
+        public async Task<bool> deleteUser(int userid)
+        {
+            var currentuser = await Task.FromResult(_userRepository.getUserByID(userid).Result);
+            var deleteUserResult = Task.FromResult(_userRepository.deleteUser(currentuser).Result);
+            return await deleteUserResult;
         }
     }
 }

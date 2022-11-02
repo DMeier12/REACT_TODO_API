@@ -9,7 +9,8 @@ public interface IToDoRepository
     Task<List<ToDoItem>> getToDoItems(int userid,bool iscompleted = false);
 
     Task<ToDoItem> createToDoItem(ToDoItem item);
-    Task<bool> deleteToDoItem(ToDoItem item);
+    Task<bool> deleteToDoItem(ToDoItem item, int userid);
     Task<bool> updateToDoItem(ToDoItem item);
     Task<bool> completeToDoItem(ToDoItem item);
+    Task<ToDoItem> getToDoItemById(int toDoItemId);
 }

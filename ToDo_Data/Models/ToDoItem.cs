@@ -14,16 +14,21 @@ namespace ToDo_Data
         [Key]
         [Column("ToDoItemID")]
         public int ToDoItemId { get; set; }
+
         [Column("CategoryID")]
         public int CategoryId { get; set; }
+
         [Column("ToDoItem")]
         [StringLength(200)]
         [Unicode(false)]
         public string ToDoItem1 { get; set; }
+
         [Column(TypeName = "date")]
         public DateTime? DueDate { get; set; }
+
         [Column("UserID")]
         public int UserId { get; set; }
+
         [Column(TypeName = "date")]
         public DateTime? DateCompleted { get; set; }
     }

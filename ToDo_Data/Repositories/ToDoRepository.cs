@@ -10,10 +10,10 @@ namespace ToDo_Data.Repositories
 {
     public class ToDoRepository : IToDoRepository
     {
-        private readonly ReactAPIContext _reactAPIContext;
-        public ToDoRepository()
+        private readonly ReactAPIContext _reactApiContext;
+        public ToDoRepository(ReactAPIContext reactAPIContext)
         {
-            _reactAPIContext = new ReactAPIContext(); 
+            _reactApiContext = reactAPIContext;
         }
         
         /// <summary>
@@ -23,12 +23,11 @@ namespace ToDo_Data.Repositories
         public async Task<List<ToDoItem>> getToDoItems(int userid,bool iscompleted = false) {
             try
             {
-                var todoitems = (from item in _reactAPIContext.ToDoItems
+                var todoitems = (from item in _reactApiContext.ToDoItems
                                  where item.DateCompleted.HasValue == iscompleted
                                  where item.UserId == userid
                                  select item).ToList();
-                if (!todoitems.Any()) { return new List<ToDoItem>(); }
-                return todoitems;
+                return !todoitems.Any() ? new List<ToDoItem>() : todoitems;
             }
             catch (Exception ex)
             {
@@ -40,60 +39,48 @@ namespace ToDo_Data.Repositories
 
         public async Task<ToDoItem> createToDoItem(ToDoItem item)
         {
-            try
-            {
-                var todoitem = _reactAPIContext.ToDoItems.AddAsync(item).Result.Entity;
+            var todoitem = _reactApiContext.ToDoItems.Add(item).Entity;
+                _reactApiContext.SaveChanges();
                 return todoitem;
-            }
-            catch (Exception ex)
-            {
-                return null;
-                throw;
-            }
         }
 
-        public async Task<bool> deleteToDoItem(ToDoItem item)
+        public async Task<bool> deleteToDoItem(ToDoItem item, int userid)
         {
-            try
-            {
-                var todoitem = _reactAPIContext.ToDoItems.Remove(item).Entity;
+            var todoitem = _reactApiContext.ToDoItems.Remove(item).Entity;
+                _reactApiContext.SaveChanges();
                 return true;
-            }
-
-            catch (Exception)
-            {
-                return false;
-                throw;
-            }
         }
 
         public async Task<bool> updateToDoItem(ToDoItem item)
         {
-            try
-            {
-                var todoitem = _reactAPIContext.ToDoItems.Update(item).Entity;
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-                throw;
-            }
+            var existingitem = await getToDoItemById(item.ToDoItemId);
+            if (existingitem.DateCompleted != null) throw new Exception("Cannot update completed task");
+
+            var todoitem = _reactApiContext.ToDoItems.Update(item).Entity;
+            _reactApiContext.SaveChanges();
+            return true;
         }
         public async Task<bool> completeToDoItem(ToDoItem item)
         {
-            try
-            {
-                item.DateCompleted = DateTime.Now;
-                var todoitem = _reactAPIContext.ToDoItems.Update(item).Entity;
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-                throw;
-            }
+
+           item.DateCompleted = DateTime.Now;
+           var todoitem = _reactApiContext.ToDoItems.Update(item).Entity;
+            _reactApiContext.SaveChanges();
+            return true;
         }
 
+        public async Task<ToDoItem> getToDoItemById(int toDoItemId)
+        {
+            var todoitem = (from item in _reactApiContext.ToDoItems
+                    where item.ToDoItemId == toDoItemId
+                    select item).Single();
+
+                if (todoitem == null)
+                {
+                    throw new Exception("Item Not Found");
+                }
+
+                return todoitem;
+            }
     }
 }

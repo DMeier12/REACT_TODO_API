@@ -4,9 +4,13 @@ namespace REACT_TODO_API.Services;
 
 public interface IToDoService
 {
-    Task<List<ToDoItem>> getToDoItems(int userid);
-    Task<List<ToDoItem>> getCompletedToDoItems(int userid);
-    Task<ToDoItem> addToDoItems(ToDoItem item);
-    Task<bool> deleteToDoItems(ToDoItem item);
+    
+    Task<ToDoItem> addToDoItem(ToDoItem item);
+    Task<bool> deleteToDoItems(int item, int userid);
     Task<bool> updateToDoItems(ToDoItem item);
+    Task<bool> completeToDoItem(int toDoItemId, int userid);
+
+    Task<List<ToDoItem>> getAllToDoItems(int userid); 
+    Task<List<ToDoItem>> getNewToDoItems(int userid);
+    Task<List<ToDoItem>> getCompletedToDoItems(int userid);
 }

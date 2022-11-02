@@ -1,26 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ToDo_Data.Interfaces;
 
 namespace ToDo_Data.Repositories
 {
     public class CategoriesRepository : ICategoriesRepository
     {
-        private readonly ReactAPIContext _reactAPIContext;
-        public CategoriesRepository()
+        private readonly ReactAPIContext _reactApiContext;
+        public CategoriesRepository(ReactAPIContext reactApiContext)
         {
-            _reactAPIContext = new ReactAPIContext();
+            _reactApiContext = reactApiContext;
         }
-
 
         public async Task<List<CategoryId>> getCategories()
         {
             try
             {
-                var categories = (from item in _reactAPIContext.CategoryIds
+                var categories = (from item in _reactApiContext.CategoryIds
                                   select item).ToList();
                 return categories;
             }
@@ -31,25 +28,23 @@ namespace ToDo_Data.Repositories
             }
         }
 
-        public async Task<CategoryId> createCategory(CategoryId categoryId)
+        public async Task<CategoryId> createCategory(string categoryValue)
         {
-            try
+            var newCategory = new CategoryId()
             {
-                var categoryid = _reactAPIContext.CategoryIds.AddAsync(categoryId).Result.Entity;
-                return categoryId;
-            }
-            catch (Exception)
-            {
-                return null;
-                throw;
-            }
+                Category = categoryValue
+            };
+            var categoryId = _reactApiContext.CategoryIds.AddAsync(newCategory).Result.Entity;
+            _reactApiContext.SaveChanges();
+            return categoryId;
         }
 
         public async Task<bool> deleteCategory(CategoryId categoryId)
         {
             try
             {
-                var categoryid = _reactAPIContext.CategoryIds.Remove(categoryId).Entity;
+                var categoryid = _reactApiContext.CategoryIds.Remove(categoryId).Entity;
+                _reactApiContext.SaveChanges();
                 return true;
             } 
             catch (Exception)
@@ -59,18 +54,21 @@ namespace ToDo_Data.Repositories
             }
         }
 
-        public async Task<bool> updateCategory(CategoryId categoryId)
+        public async Task<bool> updateCategory(CategoryId categoryId, string categoryValue)
         {
-            try
-            {
-                var categoryid = _reactAPIContext.CategoryIds.Update(categoryId).Entity;
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-                throw;
-            }
+            categoryId.Category = categoryValue;
+            var categoryid = _reactApiContext.CategoryIds.Update(categoryId).Entity;
+            _reactApiContext.SaveChanges();
+            return true;
+
         }
+
+        public async Task<CategoryId> getCategoryById(int categoryId)
+        {
+            var category = (from item in _reactApiContext.CategoryIds
+                              where item.CategoryId1 == categoryId select item).Single();
+            return category;
+        }
+
     }
 }

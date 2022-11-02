@@ -8,7 +8,6 @@ namespace REACT_TODO_API.Services
     {
         private readonly ICategoriesRepository _categoriesRepository;
 
-
         public CategoryService(ICategoriesRepository categoriesRepository)
         {
             _categoriesRepository = categoriesRepository;
@@ -20,22 +19,31 @@ namespace REACT_TODO_API.Services
             return CategoryIds;
         }
 
-        public Task<CategoryId> createCategory(CategoryId categoryId)
+        public Task<CategoryId> createCategory(string categoryValue)
         {
-            var category = _categoriesRepository.createCategory(categoryId);
+            var category = _categoriesRepository.createCategory(categoryValue);
             return category;
         }
 
-        public Task<bool> updateCategory(CategoryId categoryId)
+        public async Task<bool> updateCategory(int categoryId, string categoryValue)
         {
-            var categoryIds = Task.FromResult(_categoriesRepository.updateCategory(categoryId).Result);
+            var currentvalue = await Task.FromResult(_categoriesRepository.getCategoryById(categoryId).Result);
+            var categoryIds = await Task.FromResult(_categoriesRepository.updateCategory(currentvalue,categoryValue).Result);
             return categoryIds;
         }
 
-        public Task<bool> deleteCategory(CategoryId categoryId)
+        public async Task<bool> deleteCategory(int categoryId)
         {
-            var categories = _categoriesRepository.deleteCategory(categoryId);
+            var currentvalue = await Task.FromResult(_categoriesRepository.getCategoryById(categoryId).Result);
+            var categories = await _categoriesRepository.deleteCategory(currentvalue);
             return categories;
+        }
+        
+        public async Task<CategoryId> GetCategoryByID(int categoryID)
+        {
+            var categories = await _categoriesRepository.getCategoryById(categoryID);
+            return categories;
+
         }
     }
 }

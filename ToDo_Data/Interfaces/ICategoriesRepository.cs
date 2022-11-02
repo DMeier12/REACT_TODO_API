@@ -3,7 +3,8 @@
 public interface ICategoriesRepository
 {
     Task<List<CategoryId>> getCategories();
-    Task<CategoryId> createCategory(CategoryId categoryId);
+    Task<CategoryId> createCategory(string categoryValue);
     Task<bool> deleteCategory(CategoryId categoryId);
-    Task<bool> updateCategory(CategoryId categoryId);
+    Task<bool> updateCategory(CategoryId categoryId, string categoryValue);
+    Task<CategoryId> getCategoryById(int categoryId);
 }

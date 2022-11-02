@@ -1,5 +1,4 @@
 ﻿using ToDo_Data;
-using ToDo_Data.Repositories;
 using ToDo_Data.Interfaces;
 
 namespace REACT_TODO_API.Services
@@ -13,10 +12,18 @@ namespace REACT_TODO_API.Services
             _toDoRepository = toDoRepository;
         }
 
-        public Task<List<ToDoItem>> getToDoItems(int userid)
+        public Task<List<ToDoItem>> getAllToDoItems(int userid)
         {
-            var ToDoItems = Task.FromResult(_toDoRepository.getToDoItems(userid).Result);
-            return ToDoItems;
+            var IncompleteToDoItems = Task.FromResult(_toDoRepository.getToDoItems(userid,false).Result);
+            var CompleteToDoItems = Task.FromResult(_toDoRepository.getToDoItems(userid, true).Result);
+            var AllToDoItems = IncompleteToDoItems.Result.Concat(CompleteToDoItems.Result).ToList();
+            return Task.FromResult(AllToDoItems);
+        }
+
+        public Task<List<ToDoItem>> getNewToDoItems(int userid)
+        {
+            var IncompleteToDoItems = Task.FromResult(_toDoRepository.getToDoItems(userid, false).Result);
+            return IncompleteToDoItems;
         }
 
         public Task<List<ToDoItem>> getCompletedToDoItems(int userid)
@@ -25,16 +32,18 @@ namespace REACT_TODO_API.Services
             return ToDoItems;
         }
 
-        public Task<ToDoItem> addToDoItems(ToDoItem item)
+        public Task<ToDoItem> addToDoItem(ToDoItem item)
         {
             var ToDoItem = Task.FromResult(_toDoRepository.createToDoItem(item).Result);
             return ToDoItem;
         }
 
-        public Task<bool> deleteToDoItems(ToDoItem item)
+        public async Task<bool> deleteToDoItems(int itemid, int userid)
         {
-            var ToDoItem = Task.FromResult(_toDoRepository.deleteToDoItem(item).Result);
-            return ToDoItem;
+            var currentitem = await Task.FromResult(_toDoRepository.getToDoItemById(itemid).Result);
+            var toDoItem = await Task.FromResult(_toDoRepository.deleteToDoItem(currentitem, userid).Result);
+
+            return toDoItem;
         }
 
         public Task<bool> updateToDoItems(ToDoItem item)
@@ -43,5 +52,11 @@ namespace REACT_TODO_API.Services
             return ToDoItem;
         }
 
+        public async Task<bool> completeToDoItem(int itemId, int userid)
+        {
+            var currentitem = await Task.FromResult(_toDoRepository.getToDoItemById(itemId).Result);
+            var ToDoItem = await Task.FromResult(_toDoRepository.completeToDoItem(currentitem).Result);
+            return ToDoItem;
+        }
     }
 }    
